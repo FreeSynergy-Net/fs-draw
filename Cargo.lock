@@ -1506,6 +1506,7 @@ version = "0.0.2"
 dependencies = [
  "fs-draw-client",
  "fs-draw-server",
+ "fs-draw-simple",
  "tempfile",
 ]
 
