@@ -1,0 +1,23 @@
+name: release
+on:
+  push: { tags: ["v*"] }
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  packages: write
+jobs:
+  release:
+    uses: FreeSynergy/fs-release/.github/workflows/release.yml@v0.0.10
+    with:
+      binaries: fs-draw,fs-draw-simple
+      cargo-package: fs-draw-bin
+      ignore-binaries: fs-draw-server   # the server alone; `fs-draw serve` holds it
+      name: fs-draw
+      kind: app
+      app-id: net.freesynergy.Draw
+      macos: false
+      windows-targets: ""   # Unix sockets and Unix paths for now
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

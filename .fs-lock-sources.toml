@@ -1,0 +1,3 @@
+# Switches of the lock check of fs-release (scripts/check_lock_sources.py): every shared library in exactly ONE source.
+strict = true
+only_from_enabled = true

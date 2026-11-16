@@ -1,9 +1,25 @@
 [workspace]
 resolver = "2"
-members = ["crates/fs-draw-core"]
+members = [
+    "crates/fs-draw-core",
+    "crates/fs-draw-server",
+    "crates/fs-draw-client",
+    "crates/fs-draw-simple",
+    "crates/fs-draw-bin",
+]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.0.2"
 edition = "2024"
 license = "MIT OR Apache-2.0"
-rust-version = "1.85"
+rust-version = "1.89"
+authors = ["FreeSynergy <support@freesynergy.net>"]
+repository = "https://github.com/FreeSynergy/fs-draw"
+
+# One tag of fs-interfaces for every crate (the contract whiteboard.capnp and the rpc helpers); one tag of fs-components,
+# from which Blinc comes (never a dependency of its own, ADR 0009); fs-types from its own repository (ADR 0093).
+[workspace.dependencies]
+fs-interfaces = { git = "https://github.com/FreeSynergy/fs-interfaces", tag = "v0.0.22" }
+fs-objects = { git = "https://github.com/FreeSynergy/fs-objects", tag = "v0.0.1" }
+fs-draw-client = { path = "crates/fs-draw-client" }
+fs-draw-server = { path = "crates/fs-draw-server" }

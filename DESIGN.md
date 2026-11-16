@@ -2,11 +2,11 @@
 
 Name: renamed from fs-whiteboard to fs-draw (ADR 0087, task as verb). Types (`WhiteboardRepo`, `WhiteboardElement`), the contract `whiteboard.capnp`, capability ids, `context=whiteboard` and the media types `vnd.freesynergy.whiteboard*` stay unchanged on purpose: stored data and wire format do not change with a name.
 
-This repo holds the **program core**, stage 1 of the design, no GUI and no dependency on Blinc: the core computes what is on the board, and a component draws it. Contract: `whiteboard.capnp` in `fs-interfaces` v0.26.0 (draft, provisional; its header is binding). Program docs: `fs-documentation/docs/en/programs/apps/whiteboard/`.
+This repo holds the **program core** (`fs-draw-core`, no GUI and no dependency on Blinc: the core computes what is on the board, and a component draws it) and, since 0.0.2, the basics around it: server, client, the frontend `simple` and the starter `fs-draw` (section "The basics"). Contract: `whiteboard.capnp` in `fs-interfaces` v0.26.0 (draft, provisional; its header is binding). Program docs: `fs-documentation/docs/en/programs/apps/whiteboard/`.
 
 ## State
 
-Version 0.1.0. Stage 1 of the design; no capnp server, no GUI.
+Version 0.0.2 (the basics; the engine is stage 1 of the design, tag v0.0.1).
 
 | Area | State |
 |---|---|
@@ -16,7 +16,9 @@ Version 0.1.0. Stage 1 of the design; no capnp server, no GUI.
 | Spatial index, order keys, reading rules | done |
 | Groups, copy, align, lock, reorder | done |
 | Own format, SVG export; PNG and PDF `Unsupported` | done |
-| capnp server, Presence, sharing, libraries, templates, comments | not built |
+| capnp server | basics: boards listed, made, renamed, deleted; the rest of the contract answers "not possible" and the report says so |
+| Window | `fs-draw-simple`: name, icon placeholder, what works, what comes; nothing to draw on yet |
+| Presence, sharing, libraries, templates, comments | not built |
 | Tests | 104, real stores; XML checked by a real parser |
 
 Checked by an independent reviewer over several rounds before the tag.
@@ -73,3 +75,21 @@ A stroke has at most 100 000 points; an import at most 32 MiB; a name or text at
 
 ### Not built
 `sync`, `board.sync`, `presence.*` (the shared Presence interface has no owner yet), `board.share`, `library.*`, `template.*`, `comment.add`, PNG and PDF export, foreign imports, stylus input beyond storing pressure, and CRDT text. Listed unsupported where a capability exists. Rendering and hit testing belong to the component. Presence can join later without touching the core: it is passing data on its own channel, and nothing here stores or expects it.
+
+## The basics (0.0.2)
+
+Pattern map: the engine and the frontend are separate processes (ADR 0021); the contract is the only way between them.
+
+| Crate | Role | Depends on |
+|---|---|---|
+| `fs-draw-core` | the engine: boards, merge, undo, SVG | fs-objects, fs-interfaces |
+| `fs-draw-server` | `whiteboard.capnp` over `draw.sock`, `fs-draw serve`; Adapter over the core's `Boards` | core, fs-interfaces (rpc) |
+| `fs-draw-client` | handshake (version, contract), lease, board calls | fs-interfaces (rpc) |
+| `fs-draw-simple` | frontend `simple`: window on fs-components | client, fs-components (never core or server; a test walks the lock) |
+| `fs-draw-bin` | binary `fs-draw`: starter and `serve` | server, client |
+
+Starter: it makes sure a server of this version runs (`connect_matching`: one of this version is used, none is started with `fs-draw serve --lease`, one of another version is replaced), holds the lease, and starts the frontend `fs-draw-<id>` found next to it (default `simple`). A frontend exits with 3 when `SupportReport.contractVersion` does not fit (same name and major stage, minor stage at least the needed one); the starter then shows a message and starts `simple`; if `simple` itself exits with 3 the starter ends with 3 and a message. Never silent (ADR 0065 section 5).
+
+Contract status: `whiteboard.capnp` is a draft (fs-interfaces v0.0.22 here). The server carries `board.create`, `board.delete`, `board.list`; `board.open` and everything on the editor are named "not possible yet" in the report (ADR 0045). The contract is to be locked (a trait fixpoint) before the first release of the basics.
+
+Open: the frontend is found by name next to the starter, the manifest `packaging/frontends/simple.metainfo.xml` is not read yet (stage 1 of ADR 0094, draft); frontends for other styles come with their own manifests.

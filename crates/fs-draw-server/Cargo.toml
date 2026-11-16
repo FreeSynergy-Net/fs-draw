@@ -1,0 +1,29 @@
+[package]
+name = "fs-draw-server"
+description = "Cap'n Proto server of FreeSynergy draw: the contract whiteboard.capnp over a Unix socket (basics: boards listed, made, renamed, deleted)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "fs_draw_server"
+
+[[bin]]
+name = "fs-draw-server"
+path = "src/main.rs"
+
+[dependencies]
+fs-draw-core = { path = "../fs-draw-core" }
+fs-interfaces = { workspace = true, features = ["rpc"] }
+fs-objects.workspace = true
+capnp = "0.27"
+capnp-rpc = "0.27"
+tokio = { version = "1", features = ["sync", "time", "rt"] }
+
+[dev-dependencies]
+fs-draw-client = { path = "../fs-draw-client" }
+tempfile = "3"
+tokio = { version = "1", features = ["full"] }

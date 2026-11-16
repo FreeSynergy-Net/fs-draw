@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   check:
-    uses: FreeSynergy/fs-release/.github/workflows/check.yml@6ebd3f8f5dfc8a0be08866416169defa48aea8f1 # v0.0.9
-    # with:
-    #   working-directory: "."
-    #   apt-packages: "libssl-dev"
+    uses: FreeSynergy/fs-release/.github/workflows/check.yml@v0.0.10
+    with:
+      # Software Vulkan (lavapipe) and fonts for the tests that draw a picture of the window; a runner has no GPU
+      software-gpu: true
