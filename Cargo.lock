@@ -641,7 +641,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "fs-whiteboard-core"
+name = "fs-draw-core"
 version = "0.0.1"
 dependencies = [
  "async-trait",

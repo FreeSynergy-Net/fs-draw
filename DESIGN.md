@@ -1,4 +1,6 @@
-# fs-whiteboard – Design
+# fs-draw – Design
+
+Name: renamed from fs-whiteboard to fs-draw (ADR 0087, task as verb). Types (`WhiteboardRepo`, `WhiteboardElement`), the contract `whiteboard.capnp`, capability ids, `context=whiteboard` and the media types `vnd.freesynergy.whiteboard*` stay unchanged on purpose: stored data and wire format do not change with a name.
 
 This repo holds the **program core**, stage 1 of the design, no GUI and no dependency on Blinc: the core computes what is on the board, and a component draws it. Contract: `whiteboard.capnp` in `fs-interfaces` v0.26.0 (draft, provisional; its header is binding). Program docs: `fs-documentation/docs/en/programs/apps/whiteboard/`.
 

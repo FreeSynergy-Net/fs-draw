@@ -1,8 +1,8 @@
-# FreeSynergy Whiteboard — think visually
+# FreeSynergy Draw — think visually
 
 **A board for ideas that several people can change at once without a referee.**
 
-FreeSynergy Whiteboard is an endless board with pages, shapes, text, connectors and drawings. You can group things, copy, align, lock and reorder them, and undo your own steps.
+FreeSynergy Draw is an endless board with pages, shapes, text, connectors and drawings. You can group things, copy, align, lock and reorder them, and undo your own steps.
 
 What is different here: two people changing the same board are merged property by property. If you move a shape while I recolour it, both changes stay. The merge is written so that the order of arrival does not matter, and property tests check this. Your undo only undoes your own steps and skips a property someone else has since changed. A board can be exported as SVG.
 
@@ -25,13 +25,13 @@ Latest tag: `v0.0.1` (stage 1 of the design).
 
 ## Part of FreeSynergy
 
-Whiteboard belongs to the project-management suite and is part of the "together" step of the plan. FreeSynergy is a family of programs that are free for everyone, forever, and that keep your data yours. The documentation, the manifesto and the overall plan live in [fs-documentation](https://github.com/FreeSynergy/fs-documentation); the reading version is at <https://freesynergy.github.io/fs-documentation/>. Start with the [manifesto](https://freesynergy.github.io/fs-documentation/manifesto/) if you want to know why we do this.
+Draw belongs to the project-management suite and is part of the "together" step of the plan. FreeSynergy is a family of programs that are free for everyone, forever, and that keep your data yours. The documentation, the manifesto and the overall plan live in [fs-documentation](https://github.com/FreeSynergy/fs-documentation); the reading version is at <https://freesynergy.github.io/fs-documentation/>. Start with the [manifesto](https://freesynergy.github.io/fs-documentation/manifesto/) if you want to know why we do this.
 
 
 ## For developers
 
-- Workspace crate: `fs-whiteboard-core` (core, no GUI, no dependency on Blinc; a component draws what the core computes).
-- The contract is `whiteboard.capnp` in [fs-interfaces](https://github.com/FreeSynergy/fs-interfaces) (draft, provisional). Whiteboard owns it.
+- Workspace crate: `fs-draw-core` (core, no GUI, no dependency on Blinc; a component draws what the core computes).
+- The contract is `whiteboard.capnp` in [fs-interfaces](https://github.com/FreeSynergy/fs-interfaces) (draft, provisional). Draw owns it.
 - Build and test: `cargo build --workspace` and `cargo test --workspace`.
 - Design and decisions: [DESIGN.md](DESIGN.md).
 - Licence: MIT OR Apache-2.0.

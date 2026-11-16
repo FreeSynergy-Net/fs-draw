@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/fs-whiteboard-core"]
+members = ["crates/fs-draw-core"]
 
 [workspace.package]
 version = "0.0.1"
