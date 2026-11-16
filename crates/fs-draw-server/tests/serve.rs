@@ -16,7 +16,7 @@ use fs_draw_client::{
 struct Server {
     child: Child,
     socket: PathBuf,
-    _dir: tempfile::TempDir,
+    dir: tempfile::TempDir,
 }
 
 impl Drop for Server {
@@ -44,11 +44,7 @@ fn start(extra: &[&str], poll_ms: Option<&str>) -> Server {
         command.env("FS_LEASE_POLL_MS", ms);
     }
     let child = command.spawn().unwrap();
-    let server = Server {
-        child,
-        socket,
-        _dir: dir,
-    };
+    let server = Server { child, socket, dir };
     wait_for(&server.socket);
     server
 }
@@ -100,7 +96,7 @@ fn a_contract_that_does_not_fit_is_refused_with_words() {
 #[test]
 fn boards_are_made_listed_renamed_and_deleted_and_kept_across_a_restart() {
     let mut server = start(&[], None);
-    assert!(list_boards(&server.socket).unwrap().is_empty());
+    assert_eq!(list_boards(&server.socket).unwrap(), vec![]);
     let a = create_board(&server.socket, "Plan").unwrap();
     assert_eq!((a.name.as_str(), a.pages), ("Plan", 1));
     create_board(&server.socket, "Ideas").unwrap();
@@ -120,7 +116,7 @@ fn boards_are_made_listed_renamed_and_deleted_and_kept_across_a_restart() {
     assert_eq!(left.len(), 1);
     assert_eq!(left[0].name, "Ideas");
     // A restart on the same data folder: the board is still there (the store is a file).
-    let data = server._dir.path().join("data");
+    let data = server.dir.path().join("data");
     let _ = server.child.kill();
     let _ = server.child.wait();
     let _ = std::fs::remove_file(&server.socket);

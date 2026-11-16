@@ -19,7 +19,7 @@ fn graph(lock: &str) -> BTreeMap<String, Vec<String>> {
             }
             in_deps = false;
         } else if let Some(v) = line.strip_prefix("name = ") {
-            name = v.trim_matches('"').to_owned();
+            v.trim_matches('"').clone_into(&mut name);
         } else if line.starts_with("dependencies = [") {
             in_deps = true;
         } else if in_deps && line == "]" {

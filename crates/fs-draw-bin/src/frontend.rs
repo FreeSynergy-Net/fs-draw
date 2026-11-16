@@ -155,7 +155,7 @@ mod tests {
             run_with_fallback(&ok, &ok, &[], &mut |m| said.push(m.to_owned())),
             0
         );
-        assert!(said.is_empty());
+        assert_eq!(said, Vec::<String>::new());
     }
 
     #[test]
@@ -180,7 +180,7 @@ mod tests {
         let standard = stub(dir.path(), "standard", "exit 0");
         let mut said = Vec::new();
         let code = run_with_fallback(&dir.path().join("none"), &standard, &[], &mut |m| {
-            said.push(m.to_owned())
+            said.push(m.to_owned());
         });
         assert_eq!(code, 0);
         assert!(said[0].contains("cannot be started"));
@@ -208,7 +208,7 @@ mod tests {
             run_with_fallback(&broken, &standard, &[], &mut |m| said.push(m.to_owned())),
             7
         );
-        assert!(said.is_empty());
+        assert_eq!(said, Vec::<String>::new());
         assert!(!dir.path().join("standard.ran").exists());
     }
 }

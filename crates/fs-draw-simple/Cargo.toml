@@ -24,3 +24,4 @@ fs-components-widgets = { git = "https://github.com/FreeSynergy/fs-components", 
 
 [dev-dependencies]
 png = "0.18"
+tempfile = "3"

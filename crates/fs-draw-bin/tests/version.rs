@@ -39,7 +39,7 @@ fn help_ends_with_0_and_names_the_options() {
 fn an_unknown_option_ends_with_2_and_a_message_before_anything_starts() {
     let (code, out, err) = run(&["--bogus"]);
     assert_eq!(code, Some(2));
-    assert!(out.is_empty());
+    assert_eq!(out, "");
     assert!(err.contains("unknown option --bogus"), "{err}");
 }
 

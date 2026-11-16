@@ -120,7 +120,8 @@ async fn ask(client: &whiteboard::Client, needed: &str) -> Result<Info, ConnectE
         .map_err(|e| ConnectError::Call(e.to_string()))?;
     let report = response
         .get()
-        .and_then(|r| r.get_report())
+        .map_err(|e| ConnectError::Call(e.to_string()))?
+        .get_report()
         .map_err(|e| ConnectError::Call(e.to_string()))?;
     let contract = report
         .get_contract_version()

@@ -38,6 +38,6 @@ fn help_ends_with_0_and_names_the_exit_code_of_a_contract_that_does_not_fit() {
 fn an_unknown_option_ends_with_2_and_a_message() {
     let (code, out, err) = run(&["--bogus"]);
     assert_eq!(code, Some(2));
-    assert!(out.is_empty());
+    assert_eq!(out, "");
     assert!(err.contains("unknown option --bogus"), "{err}");
 }

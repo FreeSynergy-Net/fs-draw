@@ -11,7 +11,7 @@
 #![deny(missing_docs)]
 #![warn(clippy::pedantic)]
 // The generated `Server` trait is async for every method, also those that never wait.
-#![allow(clippy::missing_errors_doc, clippy::unused_async)]
+#![allow(clippy::missing_errors_doc, clippy::unused_async_trait_impl)]
 
 mod boards;
 pub mod lease;

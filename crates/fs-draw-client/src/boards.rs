@@ -34,10 +34,11 @@ fn read_board(b: board::Reader<'_>) -> Result<BoardInfo, ConnectError> {
             .map_err(call_err)?,
     )
     .map_err(call_err)?;
-    let name = b
-        .get_envelope()
-        .and_then(|e| e.get_name())
-        .and_then(|n| n.to_string().map_err(Into::into))
+    let envelope = b.get_envelope().map_err(call_err)?;
+    let name = envelope
+        .get_name()
+        .map_err(call_err)?
+        .to_string()
         .map_err(call_err)?;
     let mut pages = 0;
     for p in b.get_pages().map_err(call_err)? {
@@ -92,11 +93,8 @@ pub fn list_boards(socket: &Path) -> Result<Vec<BoardInfo>, ConnectError> {
             .promise
             .await
             .map_err(call_err)?;
-        let items = page
-            .get()
-            .and_then(|r| r.get_page())
-            .and_then(|p| p.get_items())
-            .map_err(call_err)?;
+        let page = page.get().map_err(call_err)?.get_page().map_err(call_err)?;
+        let items = page.get_items().map_err(call_err)?;
         items.iter().map(read_board).collect()
     })
 }
@@ -121,7 +119,12 @@ pub fn create_board(socket: &Path, name: &str) -> Result<BoardInfo, ConnectError
         let mut request = boards.create_request();
         request.get().set_name(name);
         let made = request.send().promise.await.map_err(call_err)?;
-        read_board(made.get().and_then(|r| r.get_board()).map_err(call_err)?)
+        read_board(
+            made.get()
+                .map_err(call_err)?
+                .get_board()
+                .map_err(call_err)?,
+        )
     })
 }
 
@@ -150,7 +153,12 @@ pub fn rename_board(socket: &Path, id: &str, name: &str) -> Result<BoardInfo, Co
             p.set_name(name);
         }
         let done = request.send().promise.await.map_err(call_err)?;
-        read_board(done.get().and_then(|r| r.get_board()).map_err(call_err)?)
+        read_board(
+            done.get()
+                .map_err(call_err)?
+                .get_board()
+                .map_err(call_err)?,
+        )
     })
 }
 
