@@ -37,7 +37,7 @@ pub fn run_code(words: &[String]) -> u8 {
     let german = args.german.unwrap_or_else(env_is_german);
     let (width, height) = args.size.unwrap_or((1000, 640));
     if let Some(path) = &args.picture {
-        return picture(german, (width, height), path);
+        return picture(german, (width, height), path, args.screen.as_deref());
     }
     let Some(socket) = args.socket.clone().or_else(default_socket) else {
         eprintln!("fs-draw-simple: no socket: $XDG_RUNTIME_DIR is not set, pass --socket");
@@ -83,8 +83,16 @@ fn show(german: bool, (width, height): (u32, u32), connection: &Connection) -> u
     }
 }
 
-fn picture(german: bool, (width, height): (u32, u32), path: &std::path::Path) -> u8 {
-    let drawn = app(german, &Connection::Preview).and_then(|a| a.picture(width, height, path));
+fn picture(
+    german: bool,
+    (width, height): (u32, u32),
+    path: &std::path::Path,
+    screen: Option<&str>,
+) -> u8 {
+    let drawn = app(german, &Connection::Preview).and_then(|a| {
+        a.select(screen.unwrap_or("start"));
+        a.picture(width, height, path)
+    });
     match drawn {
         Ok(()) => 0,
         Err(e) => {

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=FreeSynergy.Draw
+GenericName=Boards
+Comment=An endless board for ideas, drawings and diagrams
+Exec=fs-draw
+Icon=net.freesynergy.Draw
+Terminal=false
+Categories=Graphics;

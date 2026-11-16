@@ -16,6 +16,7 @@ Options:\n\
   --size WxH            the window size in pixels (default 1000x640)\n\
   --needs-contract TEXT the contract version this frontend asks for (for tests of the handshake)\n\
   --picture FILE        draw the window to a PNG without a server and end\n\
+  --screen start|comes  the page that --picture draws (default start)\n\
   --version             print the version and end\n\
   --help                print this text and end\n\
 \n\
@@ -40,6 +41,8 @@ pub struct Args {
     pub needs_contract: Option<String>,
     /// `--picture`.
     pub picture: Option<PathBuf>,
+    /// `--screen`: the id of the page that `--picture` draws.
+    pub screen: Option<String>,
 }
 
 /// Read the words.
@@ -59,6 +62,13 @@ pub fn parse(words: &[String]) -> Result<Args, String> {
             "--socket" => args.socket = Some(PathBuf::from(value("--socket")?)),
             "--lease" => args.lease = Some(PathBuf::from(value("--lease")?)),
             "--picture" => args.picture = Some(PathBuf::from(value("--picture")?)),
+            "--screen" => {
+                let id = value("--screen")?;
+                if id != "start" && id != "comes" {
+                    return Err(format!("--screen needs start or comes, not {id}"));
+                }
+                args.screen = Some(id.clone());
+            }
             "--needs-contract" => args.needs_contract = Some(value("--needs-contract")?.clone()),
             "--lang" => {
                 args.german = Some(match value("--lang")?.as_str() {

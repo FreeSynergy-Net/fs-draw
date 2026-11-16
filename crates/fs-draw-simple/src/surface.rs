@@ -3,20 +3,29 @@
 //!
 //! Pattern: Strategy — each surface builds its element when the shell asks; it keeps no state of the element.
 
+use std::sync::{Arc, Mutex};
+
 use fs_components::blinc::layout::div::div;
-use fs_components_widgets::{
-    AvatarGroup, Block, Element, Inline, ListItem, Person, Size, TextView, styles,
-};
+use fs_components::blinc::layout::image::img;
+use fs_components::blinc::layout::widgets::scroll::{Scroll, ScrollPhysics};
+use fs_components_widgets::file_preview::picture_address;
+use fs_components_widgets::{Block, Element, Inline, ListItem, TextView, styles};
 
 use crate::what_comes::{Item, Stage, items};
 use crate::words::{NAME, pick};
 use fs_components_app::Surface;
 
-/// The icon placeholder: a letter in a circle. The real icon comes with the icon work of the catalog (K2).
+/// The icon of the program (our own drawing, MIT; `packaging/ICON.md`), compiled in as a data address.
+const ICON_PNG: &[u8] = include_bytes!("../../../packaging/net.freesynergy.Draw.png");
+
+/// Side of the icon in the window, in pixels.
+const ICON_SIZE: f32 = 64.0;
+
 fn icon() -> impl Element + use<> {
-    AvatarGroup::new(vec![Person::new("draw", "Draw")])
-        .size(Size::ExtraLarge)
-        .build()
+    img(picture_address("image/png", ICON_PNG))
+        .w(ICON_SIZE)
+        .h(ICON_SIZE)
+        .contain()
 }
 
 fn heading(level: u8, text: &str) -> Block {
@@ -58,7 +67,7 @@ fn list(german: bool, stage: Stage) -> Block {
     }
 }
 
-fn page(german: bool, blocks: Vec<Block>, with_icon: bool) -> Box<dyn Element> {
+fn page(width: f32, height: f32, blocks: Vec<Block>, with_icon: bool) -> Box<dyn Element> {
     let mut column = div().flex_col().gap(16.0).p(24.0);
     if with_icon {
         column = column.child(
@@ -70,8 +79,17 @@ fn page(german: bool, blocks: Vec<Block>, with_icon: bool) -> Box<dyn Element> {
                 .child(TextView::new(vec![heading(1, NAME)]).build()),
         );
     }
-    let _ = german;
-    Box::new(column.child(TextView::new(blocks).tasks_locked(0).build()))
+    let column = column.child(TextView::new(blocks).tasks_locked(0).build());
+    // The page scrolls when it is longer than the window, so nothing is cut off at the bottom.
+    let physics = Arc::new(Mutex::new(ScrollPhysics::default()));
+    Box::new(
+        div().w(width).h(height).child(
+            Scroll::with_physics(physics)
+                .w(width)
+                .h(height)
+                .content(column),
+        ),
+    )
 }
 
 /// The start page.
@@ -83,7 +101,7 @@ pub struct Start {
 }
 
 impl Surface for Start {
-    fn build(&self, _width: f32, _height: f32) -> Box<dyn Element> {
+    fn build(&self, width: f32, height: f32) -> Box<dyn Element> {
         let g = self.german;
         let blocks = vec![
             paragraph(pick(
@@ -101,7 +119,7 @@ impl Surface for Start {
             heading(2, pick(g, "Server", "Server")),
             paragraph(&self.server),
         ];
-        page(g, blocks, true)
+        page(width, height, blocks, true)
     }
 
     fn styles(&self) -> String {
@@ -116,7 +134,7 @@ pub struct Comes {
 }
 
 impl Surface for Comes {
-    fn build(&self, _width: f32, _height: f32) -> Box<dyn Element> {
+    fn build(&self, width: f32, height: f32) -> Box<dyn Element> {
         let g = self.german;
         let blocks = vec![
             heading(1, pick(g, "What comes", "Was kommt")),
@@ -130,7 +148,7 @@ impl Surface for Comes {
             heading(2, pick(g, "Later", "Später")),
             list(g, Stage::Later),
         ];
-        page(g, blocks, false)
+        page(width, height, blocks, false)
     }
 
     fn styles(&self) -> String {

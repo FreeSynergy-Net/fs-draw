@@ -8,11 +8,11 @@ What is different here: two people changing the same board are merged property b
 
 ## What it can do today
 
-Latest tag: `v0.0.1` (the engine, no window). Version 0.0.2 (the basics) has no release yet.
+Latest tag: `v0.0.2` (the basics: window, server, starter; `v0.0.1` was the engine alone).
 
 Start it with `fs-draw`. It makes sure the server runs, opens the window and, when the server speaks another contract than the window was built for, says so and opens the standard frontend `simple`.
 
-- **A window** (`fs-draw-simple`, the frontend `simple`) with the name, an icon placeholder (a letter in a circle; the real icon comes later), what works now, and the list of what comes. Entries that do not work yet are locked and say "coming" (German: "kommt noch"). German and English.
+- **A window** (`fs-draw-simple`, the frontend `simple`) with the name, the program icon (`packaging/ICON.md`: own drawing, MIT), what works now, and the list of what comes. Entries that do not work yet are locked and say "coming" (German: "kommt noch"). German and English.
 - **A server** (`fs-draw serve`) that lists, makes, renames and deletes boards over a local socket (the contract `whiteboard.capnp`, a draft). Everything else of the contract answers "not possible yet", and says so in its report.
 - **The engine** behind it (`fs-draw-core`): boards, pages, shapes, text, connectors and pen strokes; merging of changes from two sides per property, undo for each person, groups, copy, align, lock, reorder, export to SVG. The window does not show these yet.
 - `fs-draw --version` and `fs-draw --help` (also for `fs-draw-simple`) print and end; an unknown option ends with code 2.
@@ -26,7 +26,7 @@ Picture of the window: after the picture check (placeholder until then, no forei
 - Import of `.excalidraw`, `.drawio` and `.xopp` files and export to PNG and PDF are later.
 - The interface is a draft, marked provisional; there is no release of the basics before it is locked.
 
-**Deutsch.** `fs-draw` startet das Programm: es sorgt dafür, dass der Server läuft, öffnet das Fenster und weicht, wenn der Server einen anderen Vertrag spricht als das Fenster, mit einer Meldung auf das Standard-Frontend `simple` aus. Heute gibt es ein Fenster mit Name, Symbol-Platzhalter (Buchstabe im Kreis), „Was heute geht“ und „Was kommt“ (nicht fertige Einträge sind gesperrt und sagen „kommt noch“), einen Server, der Tafeln auflistet, anlegt, umbenennt und löscht, und den Kern dahinter (Tafeln, Seiten, Formen, Text, Verbinder, Stiftstriche, Zusammenführen, Rückgängig, SVG-Export). Zeichnen im Fenster geht noch nicht: Fläche, Werkzeuge, Auswählen, Farben, Öffnen und Speichern kommen als Nächstes; Import fremder Formate, PNG/PDF, Live-Zusammenarbeit und Teilen später. Version 0.0.2 ist noch nicht veröffentlicht. Bild des Fensters: nach der Bildabnahme.
+**Deutsch.** `fs-draw` startet das Programm: es sorgt dafür, dass der Server läuft, öffnet das Fenster und weicht, wenn der Server einen anderen Vertrag spricht als das Fenster, mit einer Meldung auf das Standard-Frontend `simple` aus. Heute gibt es ein Fenster mit Name, dem Programm-Symbol (eigene Zeichnung, MIT), „Was heute geht“ und „Was kommt“ (nicht fertige Einträge sind gesperrt und sagen „kommt noch“), einen Server, der Tafeln auflistet, anlegt, umbenennt und löscht, und den Kern dahinter (Tafeln, Seiten, Formen, Text, Verbinder, Stiftstriche, Zusammenführen, Rückgängig, SVG-Export). Zeichnen im Fenster geht noch nicht: Fläche, Werkzeuge, Auswählen, Farben, Öffnen und Speichern kommen als Nächstes; Import fremder Formate, PNG/PDF, Live-Zusammenarbeit und Teilen später. Bild des Fensters: nach der Bildabnahme.
 
 ## Part of FreeSynergy
 
