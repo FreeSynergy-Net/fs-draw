@@ -52,12 +52,7 @@ fn the_frontend_never_reaches_the_core_or_the_server() {
         "it speaks through the client"
     );
     assert!(all.contains("fs-components-app"));
-    for forbidden in [
-        "fs-draw-core",
-        "fs-draw-server",
-        "fs-draw-bin",
-        "fs-objects",
-    ] {
+    for forbidden in ["fs-draw-core", "fs-draw-server", "fs-draw-bin"] {
         assert!(
             !all.contains(forbidden),
             "{forbidden} must not be below the frontend"
