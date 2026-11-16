@@ -9,7 +9,7 @@ use fs_components::blinc::layout::div::div;
 use fs_components::blinc::layout::image::img;
 use fs_components::blinc::layout::widgets::scroll::{Scroll, ScrollPhysics};
 use fs_components_widgets::file_preview::picture_address;
-use fs_components_widgets::{Block, Element, Inline, ListItem, TextView, styles};
+use fs_components_widgets::{Block, Element, Inline, ListItem, Mark, MarkKind, TextView, styles};
 
 use crate::what_comes::{Item, Stage, items};
 use crate::words::{NAME, pick};
@@ -35,8 +35,24 @@ fn heading(level: u8, text: &str) -> Block {
     }
 }
 
+/// Text where `` `like this` `` is shown as code (monospace span of the text view), without the backticks.
+fn inline(text: &str) -> Inline {
+    let (mut plain, mut marks, mut open) = (String::new(), Vec::new(), None);
+    for ch in text.chars() {
+        if ch == '`' {
+            match open.take() {
+                Some(start) => marks.push(Mark::new(MarkKind::Code, start, plain.chars().count())),
+                None => open = Some(plain.chars().count()),
+            }
+        } else {
+            plain.push(ch);
+        }
+    }
+    Inline::new(plain, marks)
+}
+
 fn paragraph(text: &str) -> Block {
-    Block::Paragraph(Inline::plain(text))
+    Block::Paragraph(inline(text))
 }
 
 fn say(german: bool, item: &Item) -> &'static str {
@@ -106,8 +122,8 @@ impl Surface for Start {
         let blocks = vec![
             paragraph(pick(
                 g,
-                "An endless board for ideas: shapes, text, arrows and drawings, changed by several people at once without a referee.",
-                "Eine unendliche Tafel für Ideen: Formen, Text, Pfeile und Zeichnungen, von mehreren Menschen gleichzeitig ohne Schiedsrichter geändert.",
+                "Goal: an endless board for ideas: shapes, text, arrows and drawings, changed by several people at once without a referee.",
+                "Ziel: eine unendliche Tafel für Ideen: Formen, Text, Pfeile und Zeichnungen, von mehreren Menschen gleichzeitig ohne Schiedsrichter geändert.",
             )),
             paragraph(pick(
                 g,

@@ -90,6 +90,6 @@ Pattern map: the engine and the frontend are separate processes (ADR 0021); the 
 
 Starter: it makes sure a server of this version runs (`connect_matching`: one of this version is used, none is started with `fs-draw serve --lease`, one of another version is replaced), holds the lease, and starts the frontend `fs-draw-<id>` found next to it (default `simple`). A frontend exits with 3 when `SupportReport.contractVersion` does not fit (same name and major stage, minor stage at least the needed one); the starter then shows a message and starts `simple`; if `simple` itself exits with 3 the starter ends with 3 and a message. Never silent (ADR 0065 section 5).
 
-Contract status: `whiteboard.capnp` is a draft (fs-interfaces v0.0.22 here). The server carries `board.create`, `board.delete`, `board.list`; `board.open` and everything on the editor are named "not possible yet" in the report (ADR 0045). The contract is to be locked (a trait fixpoint) before the first release of the basics.
+Contract status: `whiteboard.capnp` is a draft (fs-interfaces v0.0.22 here). The server carries `board.create`, `board.delete`, `board.list`; `board.open` and everything on the editor are named "not possible yet" in the report (ADR 0045). The contract stays a draft (not locked); the basics are released with it (decision of the strategy).
 
 Open: the frontend is found by name next to the starter, the manifest `packaging/frontends/simple.metainfo.xml` is not read yet (stage 1 of ADR 0094, draft); frontends for other styles come with their own manifests.

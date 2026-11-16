@@ -26,12 +26,14 @@ tempfile = "3"
 # The frontend `simple` is a package of its own (ADR 0094 draft, stage 1: one deb/rpm per Cargo package); the program needs it.
 # Both binaries are never in one package (file conflict). An own rpm table must list the assets itself (fs-release linux-pkg.sh).
 [package.metadata.deb]
-depends = "$auto, fs-draw-simple (= ${binary:Version})"
+name = "fs-draw"
+depends = "$auto, fs-draw-simple (>= 0.0.2)"
 
 [package.metadata.generate-rpm]
+name = "fs-draw"
 assets = [
     { source = "target/release/fs-draw", dest = "/usr/bin/fs-draw", mode = "755" },
 ]
 
 [package.metadata.generate-rpm.requires]
-fs-draw-simple = "= 0.0.2"
+fs-draw-simple = ">= 0.0.2"
