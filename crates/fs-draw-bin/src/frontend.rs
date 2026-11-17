@@ -109,10 +109,29 @@ mod tests {
     use super::*;
     use std::os::unix::fs::PermissionsExt;
 
+    use std::io::Write;
+    use std::sync::{Mutex, MutexGuard};
+
+    /// Held for the whole of every test that writes a stub script and starts it: a script that is still open for writing
+    /// in one thread while another thread forks makes `exec` fail with "Text file busy" (ETXTBSY), which would run the
+    /// error branch by accident. The real error branch is not retried or hidden.
+    static LOCK: Mutex<()> = Mutex::new(());
+
+    fn guard() -> MutexGuard<'static, ()> {
+        LOCK.lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
     fn stub(dir: &Path, name: &str, body: &str) -> PathBuf {
         let path = dir.join(name);
-        std::fs::write(&path, format!("#!/bin/sh\n{body}\n")).unwrap();
-        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
+        let mut file = std::fs::File::create(&path).unwrap();
+        file.write_all(format!("#!/bin/sh\n{body}\n").as_bytes())
+            .unwrap();
+        file.set_permissions(std::fs::Permissions::from_mode(0o755))
+            .unwrap();
+        // Closed before anything starts it: no open write handle during exec.
+        file.sync_all().unwrap();
+        drop(file);
         path
     }
 
@@ -148,6 +167,7 @@ mod tests {
 
     #[test]
     fn a_fitting_frontend_runs_alone_and_says_nothing() {
+        let _guard = guard();
         let dir = tempfile::tempdir().unwrap();
         let ok = stub(dir.path(), "ok", "exit 0");
         let mut said = Vec::new();
@@ -160,6 +180,7 @@ mod tests {
 
     #[test]
     fn a_frontend_with_the_wrong_contract_is_replaced_by_the_standard_one_with_a_message() {
+        let _guard = guard();
         let dir = tempfile::tempdir().unwrap();
         let wrong = stub(dir.path(), "wrong", "exit 3");
         let standard = stub(dir.path(), "standard", "echo standard > \"$0.ran\"\nexit 0");
@@ -176,6 +197,7 @@ mod tests {
 
     #[test]
     fn a_frontend_that_is_missing_is_replaced_too() {
+        let _guard = guard();
         let dir = tempfile::tempdir().unwrap();
         let standard = stub(dir.path(), "standard", "exit 0");
         let mut said = Vec::new();
@@ -188,6 +210,7 @@ mod tests {
 
     #[test]
     fn the_standard_frontend_with_the_wrong_contract_ends_with_3_and_a_message() {
+        let _guard = guard();
         let dir = tempfile::tempdir().unwrap();
         let standard = stub(dir.path(), "standard", "exit 3");
         let mut said = Vec::new();
@@ -200,6 +223,7 @@ mod tests {
 
     #[test]
     fn another_exit_code_is_the_frontends_own_and_no_fallback_runs() {
+        let _guard = guard();
         let dir = tempfile::tempdir().unwrap();
         let broken = stub(dir.path(), "broken", "exit 7");
         let standard = stub(dir.path(), "standard", "touch \"$0.ran\"");

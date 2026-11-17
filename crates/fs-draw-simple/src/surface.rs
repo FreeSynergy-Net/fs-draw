@@ -18,6 +18,12 @@ use fs_components_app::Surface;
 /// The icon of the program (our own drawing, MIT; `packaging/ICON.md`), compiled in as a data address.
 const ICON_PNG: &[u8] = include_bytes!("../../../packaging/net.freesynergy.Draw.png");
 
+/// Width of the box of the title, in pixels (the text view spreads over what it gets).
+const TITLE_WIDTH: f32 = 300.0;
+
+/// How far the box is pulled to the icon, in pixels (Blinc counts margins in units of 4 px: 13 is about 52 px; the text view keeps room on its own left).
+const TITLE_PULL: f32 = 13.0;
+
 /// Side of the icon in the window, in pixels.
 const ICON_SIZE: f32 = 64.0;
 
@@ -92,7 +98,13 @@ fn page(width: f32, height: f32, blocks: Vec<Block>, with_icon: bool) -> Box<dyn
                 .items_center()
                 .gap(16.0)
                 .child(icon())
-                .child(TextView::new(vec![heading(1, NAME)]).build()),
+                .child(
+                    // The text view spreads over the width it gets; a narrow box keeps the title next to the icon.
+                    div()
+                        .w(TITLE_WIDTH)
+                        .ml(-TITLE_PULL)
+                        .child(TextView::new(vec![heading(1, NAME)]).build()),
+                ),
         );
     }
     let column = column.child(TextView::new(blocks).tasks_locked(0).build());
