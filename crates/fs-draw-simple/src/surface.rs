@@ -32,6 +32,8 @@ fn icon() -> impl Element + use<> {
         .w(ICON_SIZE)
         .h(ICON_SIZE)
         .contain()
+        // Blinc fades a picture in; without this a picture drawn at once (headless) shows it half transparent.
+        .no_fade()
 }
 
 fn heading(level: u8, text: &str) -> Block {
